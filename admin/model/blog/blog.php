@@ -7,7 +7,7 @@ class ModelBlogBlog extends Model{
 	*/
 	public function addCategory($data)
 	{
-		$this->db->query("INSERT INTO `".DB_PREFIX."blog_categories`(title,descr,meta_descr,img,status)VALUES('".$this->db->escape($data['title'])."','".$this->db->escape($data['descr'])."','".$this->db->escape($this->db->data['meta_descr'])."','".$this->db->escape($this->db->data['img'])."','".(int)$data['status']."')");
+		$this->db->query("INSERT INTO `".DB_PREFIX."blog_categories`(title,descr,meta_descr,img,status)VALUES('" . $this->db->escape($data['title']) . "','" . $this->db->escape($data['descr']) . "','" . $this->db->escape($data['meta_descr'])."','" . $this->db->escape($data['img']) ."','".(int)$data['status']."')");
 	}
 
 	/*
@@ -63,7 +63,7 @@ class ModelBlogBlog extends Model{
 	*/
 	public function addPost($data)
 	{
-		$this->db->query("INSERT INTO `".DB_PREFIX."blog_posts`(title,descr,anons,meta_descr,img,status)VALUES('".$this->db->escape($data['title'])."','".$this->db->escape($data['descr'])."','".$this->data['anons']."','".$this->db->escape($this->db->data['meta_descr'])."','".$this->db->escape($data['img'])."','".$data['status']."')");
+		$this->db->query("INSERT INTO `" .DB_PREFIX . "blog_posts`(title,descr,anons,meta_descr,img,status)VALUES('".$this->db->escape($data['title'])."','".$this->db->escape($data['descr']) . "','" . $this->db->escape($data['anons']) . "','" . $this->db->escape($data['meta_descr'])."','".$this->db->escape($data['img'])."','".$data['status']."')");
 		$postId = $this->db->getLastId();
 		if(!empty($data['post_cats'])){
 			foreach($data['post_cats'] as $catId){
