@@ -73,22 +73,21 @@ class ControllerModuleBlog extends Controller {
 			$this->redirect($this->url->link('extension/module','token=' . $this->session->data['token'],'SSL'));
 		}
 
-		$set_field = function(&$controller,&$data,$field){
-			if(isset($controller->request->post[$field])){
-				$data[$field] = $controller->request->post[$field];
-			}else{
-				$data[$field] = $controller->config->get($field);
-			}
-		};
+		$fields = array( 'blog_headline_chars', 'blog_thumb_width', 'blog_thumb_height', 'blog_popup_width', 'blog_popup_height', 'blog_module', 'blog_cats_limit', 'blog_posts_limit' );
 
-		$this->set_form_field('blog_headline_chars',$set_field);
-		$this->set_form_field('blog_thumb_width',$set_field);
-		$this->set_form_field('blog_thumb_height',$set_field);
-		$this->set_form_field('blog_popup_width',$set_field);
-		$this->set_form_field('blog_popup_height',$set_field);
-		$this->set_form_field('blog_module',$set_field);
-		$this->set_form_field('blog_cats_limit',$set_field);
-		$this->set_form_field('blog_posts_limit',$set_field);
+		foreach($fields as $field){
+			if(isset($this->request->post[$field])){
+				$this->data[$field] = $this->request->post[$field];
+			}else{
+				$this->data[$field] = $this->config->get($field);
+			}
+
+			if(isset($this->error[$field])){
+				$this->data["error_".$field] = $this->error[$field];
+			}else{
+				$this->data["error_".$field] = "";
+			}		
+		}
 
 		$this->load->model('design/layout');
 		$this->data['layouts'] = $this->model_design_layout->getLayouts();
@@ -182,16 +181,21 @@ class ControllerModuleBlog extends Controller {
 			$this->redirect($this->url->link('module/blog/cats','token='.$this->session->data['token'],'SSL'));
 		}	
 
-		$set_field = function(&$controller,&$data,$field){
-			$data[$field] = '';
-		};
+		$fields = array('title', 'descr', 'meta_descr', 'status', 'img');
 
-		$this->set_form_field('title',$set_field);
-		$this->set_form_field('descr',$set_field);
-		$this->set_form_field('meta_descr',$set_field);
-		$this->set_form_field('status',$set_field);
-		$this->set_form_field('img',$set_field);
+		foreach($fields as $field){
+			if(isset($this->request->post[$field])){
+				$this->data[$field] = $this->request->post[$field];
+			}else{
+				$this->data[$field] = '';
+			}
 
+			if(isset($this->error[$field])){
+				$this->data["error_".$field] = $this->error[$field];
+			}else{
+				$this->data["error_".$field] = "";
+			}
+		}
 
 		$this->load->model('tool/image');
 		$this->data['preview'] = $this->model_tool_image->resize('no_image.jpg', 100, 100);
@@ -222,19 +226,25 @@ class ControllerModuleBlog extends Controller {
 			$this->redirect($redirectUrl);
 		}
 
-		$set_field = function(&$controller,&$data,$field,$item){
-			if(isset($item[$field])){
-				$data[$field] = $item[$field];
-			}else{
-				$data[$field] = '';
-			}
-		};
+		$fields = array('title', 'descr', 'meta_descr', 'status', 'img');
 
-		$this->set_form_field('title',$set_field,$cat);
-		$this->set_form_field('descr',$set_field,$cat);
-		$this->set_form_field('meta_descr',$set_field,$cat);
-		$this->set_form_field('status',$set_field,$cat);
-		$this->set_form_field('img',$set_field,$cat);
+		foreach($fields as $field){
+			if(isset($this->request->post[$field])){
+				$this->data[$field] = $this->request->post[$field];
+			} else {
+				if(isset($cat[$field])){
+					$this->data[$field] = $cat[$field];
+				} else {
+					$this->data[$field] = '';
+				}
+			}
+
+			if(isset($this->error[$field])){
+				$this->data["error_".$field] = $this->error[$field];
+			}else{
+				$this->data["error_".$field] = "";
+			}		
+		}
 
 
 		$this->load->model('tool/image');
@@ -349,20 +359,32 @@ class ControllerModuleBlog extends Controller {
 				$data[$field] = array();
 		};
 
-		$this->set_form_field('title',$set_field);
-		$this->set_form_field('anons',$set_field);
-		$this->set_form_field('descr',$set_field);
-		$this->set_form_field('post_cats',$set_field);
-		$this->set_form_field('meta_descr',$set_field);
-		$this->set_form_field('status',$set_field);
-		$this->set_form_field('img',$set_field);
+		$fields = array('title', 'anons', 'descr', 'post_cats', 'meta_descr', 'status', 'img');
+
+		foreach($fields as $field){
+			if(isset($this->request->post[$field])){
+				$this->data[$field] = $this->request->post[$field];
+			} else {
+				if($field != 'post_cats'){
+					$this->data[$field] = '';
+				} else {
+					$this->data[$field] = array();
+				}
+			}
+
+			if(isset($this->error[$field])){
+				$this->data["error_".$field] = $this->error[$field];
+			}else{
+				$this->data["error_".$field] = "";
+			}
+		}
 
 
 		$this->load->model('tool/image');
 		$this->data['preview'] = $this->model_tool_image->resize('no_image.jpg', 100, 100);
 		$this->data['cats'] = $this->blog->getCats();
 
-		$this->data['action'] = $this->url->link('module/blog/posts','act=add&token='.$this->token,'SSL');
+		$this->data['action'] = $this->url->link('module/blog/posts', 'act=add&token=' . $this->token, 'SSL');
 		$this->template = 'module/blog/posts_form.tpl';
 		$this->children = array(
 			'common/header',
@@ -395,14 +417,25 @@ class ControllerModuleBlog extends Controller {
 			}
 		};
 
-		$this->set_form_field('title',$set_field,$post);
-		$this->set_form_field('anons',$set_field,$post);
-		$this->set_form_field('descr',$set_field,$post);
-		$this->set_form_field('post_cats',$set_field,$post);
-		$this->set_form_field('meta_descr',$set_field,$post);
-		$this->set_form_field('status',$set_field,$post);
-		$this->set_form_field('img',$set_field,$post);
+		$fields = array('title', 'anons', 'descr', 'post_cats', 'meta_descr', 'status', 'img');
 
+		foreach($fields as $field){
+			if(isset($this->request->post[$field])){
+				$this->data[$field] = $this->request->post[$field];
+			}else{
+				if(isset($post[$field])){
+					$this->data[$field] = $post[$field];
+				}else{
+					$this->data[$field] = '';
+				}	
+			}
+
+			if(isset($this->error[$field])){
+				$this->data["error_".$field] = $this->error[$field];
+			}else{
+				$this->data["error_".$field] = "";
+			}
+		}
 
 		$this->load->model('tool/image');
 
@@ -550,20 +583,5 @@ class ControllerModuleBlog extends Controller {
 	private function is_post()
 	{
 		return $this->request->server['REQUEST_METHOD'] == 'POST';
-	}
-
-	private function set_form_field($field,$fn,$item='')
-	{
-		if(isset($this->request->post[$field])){
-			$this->data[$field] = $this->request->post[$field];
-		}else{
-			$fn($this,$this->data,$field,$item);
-		}
-
-		if(isset($this->error[$field])){
-			$this->data["error_".$field] = $this->error[$field];
-		}else{
-			$this->data["error_".$field] = "";
-		}
 	}
 }
