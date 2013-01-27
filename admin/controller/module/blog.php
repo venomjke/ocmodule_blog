@@ -352,13 +352,6 @@ class ControllerModuleBlog extends Controller {
 			$this->redirect($this->url->link('module/blog/posts','token='.$this->token,'SSL'));
 		}	
 
-		$set_field = function(&$controller,&$data,$field){
-			if($field != 'post_cats')
-				$data[$field] = '';
-			else
-				$data[$field] = array();
-		};
-
 		$fields = array('title', 'anons', 'descr', 'post_cats', 'meta_descr', 'status', 'img');
 
 		foreach($fields as $field){
@@ -408,14 +401,6 @@ class ControllerModuleBlog extends Controller {
 			$this->session->data['success'] = $this->language->get('text_success');
 			$this->redirect($redirectUrl);
 		}
-
-		$set_field = function(&$controller,&$data,$field,$item){
-			if(isset($item[$field])){
-				$data[$field] = $item[$field];
-			}else{
-				$data[$field] = '';
-			}
-		};
 
 		$fields = array('title', 'anons', 'descr', 'post_cats', 'meta_descr', 'status', 'img');
 
